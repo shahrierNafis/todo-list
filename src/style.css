@@ -1,0 +1,40 @@
+body {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    background-color: rgb(50, 50, 50);
+    font-size: 2.5rem;
+    height: 100vh;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+nav {
+    border-right: black 1px solid;
+}
+
+.projects {}
+
+.project {
+    display: flex;
+    border: 1px white solid;
+    justify-content: center;
+    align-items: center;
+}
+
+.current {
+    border: 2px rgb(98, 134, 201) solid;
+}
+
+.add-project {
+    width: 100%;
+    height: 2.5rem;
+    color: white;
+    font-size: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px
+}
+
+.container {
+    background-color: white;
+}
