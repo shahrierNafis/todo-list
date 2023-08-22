@@ -1,6 +1,6 @@
 body{
     margin: 0;
-    height: 110vh;
+    height: 100vh;
     display: grid;
     grid-template-areas:
     "header header"
@@ -26,11 +26,127 @@ header{
     background-color: gray;
 
 }
+.project{
+    padding-left: 8px;
+    font-size: 2rem;
+    display: flex;
+    justify-content: space-between;
+}
+.selected-project{
+    border: 1px solid black;
+}
+#remove-project-btn{
+    visibility:hidden;
+}
+.selected-project > #remove-project-btn{
+    visibility: visible;
+
+}
+#add-project-btn{
+    font-size: 2rem;
+    display: flex;
+    justify-content: center;
+    border: 1px solid black;
+}
 #main{
     grid-area:main ;
     background-color: lightgray;
 
 }
+#initial-text{
+    color: gray;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+}
+.task-div-main{
+    display: flex;
+    justify-content: space-between;
+}
+.task{
+    display: flex;
+    border: black solid 1px;
+
+}
+.task-div-head{
+    display: flex;
+}
+
+.task-div-main{
+    flex-grow: 1;
+    display: flex;
+    justify-content: space-between;
+}
+#add-task-btn{
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+    border: 1px solid black;
+}
+#editor-window{
+    position: absolute;
+    height: 45vh;
+    width: 75vw;
+    top: 0;
+    right: 0; 
+    bottom: 0;
+    left: 0; 
+    margin: auto;
+    background-color: lightgray;
+    border: black 1px solid;
+    display: grid;
+    grid-template-areas: 
+    "title . close"
+    "description description description"
+    "dueDate priority done";
+    grid-template-columns:1fr 1fr 1fr;
+    grid-template-rows: 5vh auto 5vh;
+}
+#title{
+    grid-area: title;
+}
+#close-btn{
+    font-size: 2rem;
+    margin-left: auto;
+    margin-top: -.75rem;
+    grid-area: close;
+}
+#description{
+    grid-area: description;
+    width: 100%;
+    overflow: scroll;
+}
+#dueDate{
+   grid-area: dueDate;
+}
+#priority{
+    grid-area: priority;
+}
+#done-btn{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    grid-area:done;
+}
+#done-btn:hover{
+    background-color: gray;
+}
+.gray{
+    background-color: lightgray;
+}
+.green{
+    background-color: lightgreen;
+}
+.orange{
+    background-color: lightsalmon;
+}
+.red{
+    background-color: lightcoral;
+}
+.gray:hover,
+.green:hover,
+.orange:hover,
+.red:hover{ background-color:lightyellow}
 footer{   
     grid-area: footer;
     background-color: lightslategray;
