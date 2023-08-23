@@ -32,6 +32,9 @@ header{
     display: flex;
     justify-content: space-between;
 }
+.project-name{
+    flex-grow: 1;
+}
 .selected-project{
     border: 1px solid black;
 }
@@ -40,7 +43,6 @@ header{
 }
 .selected-project > #remove-project-btn{
     visibility: visible;
-
 }
 #add-project-btn{
     font-size: 2rem;
@@ -48,6 +50,36 @@ header{
     justify-content: center;
     border: 1px solid black;
 }
+#new-project-window{
+    position: absolute;
+    height: 15vh;
+    width: 30vw;
+    top: 0;
+    right: 0; 
+    bottom: 0;
+    left: 0; 
+    margin: auto;
+    background-color: lightgray;
+    border: black 1px solid;
+    display: grid;
+    grid-template-areas: 
+    ". . . . close-btn"
+    ". . project-name-setter . ."
+    ". . add-btn . ."
+    ". . . . .";
+    grid-template-columns:1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+}
+#close-btn-project{
+    grid-area: close-btn;
+}
+#project-name-setter{
+    grid-area: project-name-setter;
+}
+#add-btn{
+    grid-area: add-btn;
+}
+
 #main{
     grid-area:main ;
     background-color: lightgray;
