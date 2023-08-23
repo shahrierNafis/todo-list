@@ -3,7 +3,7 @@ import { format } from "date-fns";
 
 let currentProject = "Home";
 
-function popTaskEditor(projectName, taskIndex) {
+function popTaskEditor(taskIndex) {
   let editorWindow = document.createElement("div");
   editorWindow.id = "editor-window";
 
@@ -17,7 +17,7 @@ function popTaskEditor(projectName, taskIndex) {
   let closeBtn = document.createElement("div");
   closeBtn.id = "close-btn";
   closeBtn.innerText = "X";
-  closeBtn.addEventListener("click", (event) => {
+  closeBtn.addEventListener("click", () => {
     //close
     document.querySelector("#editor-window").remove();
   });
@@ -68,9 +68,9 @@ function popTaskEditor(projectName, taskIndex) {
   doneBtn.innerText = "done";
   doneBtn.addEventListener("click", (event) => {
     //edit
-    if (projectName && taskIndex + 1) {
+    if (taskIndex + 1) {
       data.editTask(
-        projectName,
+        currentProject,
         taskIndex,
         title.value,
         description.value,
@@ -93,11 +93,13 @@ function popTaskEditor(projectName, taskIndex) {
   });
 
   //edit
-  if (projectName && taskIndex + 1) {
-    let task = data.getTask(projectName, taskIndex);
+  if (taskIndex + 1) {
+    let task = data.getTask(currentProject, taskIndex);
     title.value = task.title;
     description.value = task.description;
-    deuDate.value = format(task.dueDate, "yyyy-MM-dd");
+    deuDate.value = task.dueDate //check empty dates
+      ? format(task.dueDate, "yyyy-MM-dd")
+      : "No date";
     priority.value = task.priority;
   }
 
@@ -119,10 +121,65 @@ function finishTask(taskDiv) {
   showAllTasks(currentProject);
 }
 
-function popNewProject(title) {}
+function popNewProject() {
+  let newProjectWindow = document.createElement("div");
+  newProjectWindow.id = "new-project-window";
 
-function popProjectDeletionConfirmation(project) {}
+  //ProjectName
+  let projectName = document.createElement("input");
+  projectName.type = "text";
+  projectName.placeholder = "Project name";
+  projectName.id = "project-name-setter";
 
+  //closeBtn
+  let closeBtn = document.createElement("div");
+  closeBtn.id = "close-btn-project";
+  closeBtn.innerText = "X";
+  closeBtn.addEventListener("click", () => {
+    //close
+    document.querySelector("#new-project-window").remove();
+  });
+
+  //addBtn
+  let addBtn = document.createElement("button");
+  addBtn.id = "add-btn";
+  addBtn.innerText = "add";
+  addBtn.addEventListener("click", () => {
+    //alert
+    if (data.getAllTasks(projectName.value)) {
+      alert("Project names must be different");
+      return;
+    }
+    if (!projectName.value) {
+      alert("Project names can't be empty");
+      return;
+    }
+    data.addProject(projectName.value);
+    showAllProjects();
+    //close
+    document.querySelector("#new-project-window").remove();
+  });
+  //add element
+  newProjectWindow.appendChild(projectName);
+  newProjectWindow.appendChild(closeBtn);
+  newProjectWindow.appendChild(addBtn);
+
+  document.body.appendChild(newProjectWindow);
+}
+function selectProject(project) {
+  //remove selected-project class from previous project
+  document
+    .querySelector(`#${currentProject}`)
+    .classList.remove("selected-project");
+
+  currentProject = project;
+  //add selected-project class to current project
+
+  document
+    .querySelector(`#${currentProject}`)
+    .classList.add("selected-project");
+  showAllTasks(project);
+}
 function showAllProjects() {
   //Clear side bar
   document.querySelector("#sidebar").textContent = "";
@@ -131,28 +188,38 @@ function showAllProjects() {
   Object.keys(projects).forEach((project) => {
     //project element
     let projectDiv = document.createElement("div");
-    projectDiv.innerText = project;
     projectDiv.classList.add("project");
     projectDiv.id = project;
-    projectDiv.addEventListener("click", () => {
-      //remove selected-project class from previous project
-      document
-        .querySelector(`#${currentProject}`)
-        .classList.remove("selected-project");
-      //add selected-project class to current project
-      projectDiv.classList.add("selected-project");
-      currentProject = project;
-      showAllTasks(project);
+
+    //projectName
+    let projectName = document.createElement("div");
+    projectName.classList.add("project-name");
+    projectName.innerText = project;
+    projectName.addEventListener("click", () => {
+      //select project
+      selectProject(project);
     });
     //Project remove button
     let removeProjectBtn = document.createElement("div");
     removeProjectBtn.innerText = "X";
     removeProjectBtn.id = "remove-project-btn";
     removeProjectBtn.addEventListener("click", () => {
-      popProjectDeletionConfirmation(project);
+      if (confirm(`Are you sure you want delete ${currentProject}`)) {
+        //remove
+        data.removeProject(currentProject);
+
+        //
+        selectProject("Home");
+        showAllProjects();
+      }
     });
-    //add project remove button
-    projectDiv.appendChild(removeProjectBtn);
+    //append project name
+    projectDiv.appendChild(projectName);
+    //won't add project remove button to home project
+    if (!(project == "Home")) {
+      //append project remove button
+      projectDiv.appendChild(removeProjectBtn);
+    }
     //add project to sidebar
     document.querySelector("#sidebar").appendChild(projectDiv);
   });
@@ -193,7 +260,7 @@ function showAllTasks(project) {
     let taskDivMain = document.createElement("div");
     taskDivMain.classList.add("task-div-main");
     taskDivMain.addEventListener("click", () => {
-      popTaskEditor(currentProject, index);
+      popTaskEditor(index);
     });
 
     //titleDiv
@@ -203,7 +270,9 @@ function showAllTasks(project) {
     //dueDateDiv
     let dueDateDiv = document.createElement("div");
     dueDateDiv.classList.add("dueDate");
-    dueDateDiv.innerText = format(task.dueDate, "dd-MM-yyyy");
+    dueDateDiv.innerText = task.dueDate //check empty dates
+      ? format(task.dueDate, "yyyy-MM-dd")
+      : "No date";
 
     taskDivMain.appendChild(titleDiv);
     taskDivMain.appendChild(dueDateDiv);
@@ -225,7 +294,7 @@ export default {
   popTaskEditor,
   finishTask,
   popNewProject,
-  popProjectDeletionConfirmation,
+  selectProject,
   showAllProjects,
   currentProject,
   showAllTasks,

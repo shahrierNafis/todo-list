@@ -1,5 +1,6 @@
 import task from "./task.js";
 function addTask(projectName, title, description, dueDate, priority) {
+  //get
   let projects = JSON.parse(localStorage.getItem("projects"));
   //push a new task
   projects[projectName].push(
@@ -16,11 +17,12 @@ function editTask(
   dueDate,
   priority
 ) {
-  console.log(dueDate);
   let projects = JSON.parse(localStorage.getItem("projects"));
   projects[projectName][taskIndex].title = title;
   projects[projectName][taskIndex].description = description;
-  projects[projectName][taskIndex].dueDate = Date.parse(dueDate);
+  projects[projectName][taskIndex].dueDate = dueDate
+    ? Date.parse(dueDate) //check if date empty
+    : "";
   projects[projectName][taskIndex].priority = priority;
   //save
   localStorage.setItem("projects", JSON.stringify(projects));
@@ -43,9 +45,13 @@ function getAllTasks(projectName) {
   return JSON.parse(localStorage.getItem("projects"))[projectName];
 }
 
-function addProject() {
-  //   let project;
-  //   storage.saveProject(project);
+function addProject(projectName) {
+  //get
+  let projects = JSON.parse(localStorage.getItem("projects"));
+  //add
+  projects[projectName] = [];
+  //save
+  localStorage.setItem("projects", JSON.stringify(projects));
 }
 function getAllProjects() {
   if (localStorage.getItem("projects")) {
@@ -54,14 +60,21 @@ function getAllProjects() {
     localStorage.setItem(
       "projects",
       JSON.stringify({
-        Home: [task.createTask("Task 1", "", new Date(), "green")],
+        Home: [],
       })
     );
   }
   return JSON.parse(localStorage.getItem("projects"));
 }
 
-function removeProject() {}
+function removeProject(projectName) {
+  //get
+  let projects = JSON.parse(localStorage.getItem("projects"));
+  //remove
+  delete projects[projectName];
+  //save
+  localStorage.setItem("projects", JSON.stringify(projects));
+}
 export default {
   addTask,
   editTask,
