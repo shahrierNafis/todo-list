@@ -1,151 +1,159 @@
-import data from "./data.js";
+/* eslint-disable no-alert */
+/* eslint-disable no-restricted-globals */
+/* eslint-disable no-use-before-define */
 import { format } from "date-fns";
+import data from "./data";
 
 let currentProject = "Home";
-
+/**
+ * Creates a pop-up window for editing a task.
+ * @param {number} taskIndex - The index of the task being edited.
+ */
 function popTaskEditor(taskIndex) {
-  let editorWindow = document.createElement("div");
+  // Create editor window
+  const editorWindow = document.createElement("div");
   editorWindow.id = "editor-window";
 
-  //title
-  let title = document.createElement("input");
+  // Create title input
+  const title = document.createElement("input");
   title.type = "text";
   title.id = "title-editor";
   title.placeholder = "title";
 
-  //closeBtn
-  let closeBtn = document.createElement("div");
+  // Create close button
+  const closeBtn = document.createElement("div");
   closeBtn.id = "close-btn";
   closeBtn.innerText = "X";
   closeBtn.addEventListener("click", () => {
-    //close
+    // Close the editor window
     document.querySelector("#editor-window").remove();
   });
 
-  //description
-  let description = document.createElement("textarea");
+  // Create description textarea
+  const description = document.createElement("textarea");
   description.id = "description";
   description.placeholder = "description";
 
-  //deuDate
-  let deuDate = document.createElement("input");
-  deuDate.id = "dueDate";
-  deuDate.type = "date";
+  // Create due date input
+  const dueDate = document.createElement("input");
+  dueDate.id = "dueDate";
+  dueDate.type = "date";
 
-  //priority
-  let priority = document.createElement("select");
+  // Create priority select
+  const priority = document.createElement("select");
   priority.id = "priority";
 
-  let gray = document.createElement("option");
+  // Create priority options
+  const gray = document.createElement("option");
   gray.classList.add("gray");
   gray.id = "gray";
   gray.value = "gray";
   gray.innerText = "gray";
 
-  let green = document.createElement("option");
+  const green = document.createElement("option");
   green.classList.add("green");
   green.value = "green";
   green.innerText = "green";
 
-  let orange = document.createElement("option");
+  const orange = document.createElement("option");
   orange.classList.add("orange");
   orange.value = "orange";
   orange.innerText = "orange";
 
-  let red = document.createElement("option");
+  const red = document.createElement("option");
   red.classList.add("red");
   red.value = "red";
   red.innerText = "red";
 
+  // Append priority options to select element
   priority.appendChild(gray);
   priority.appendChild(green);
   priority.appendChild(orange);
   priority.appendChild(red);
 
-  //doneBtn
-  let doneBtn = document.createElement("div");
+  // Create done button
+  const doneBtn = document.createElement("div");
   doneBtn.id = "done-btn";
   doneBtn.innerText = "done";
-  doneBtn.addEventListener("click", (event) => {
-    //edit
+  doneBtn.addEventListener("click", () => {
+    // Edit or create task based on taskIndex
     if (taskIndex + 1) {
       data.editTask(
         currentProject,
         taskIndex,
         title.value,
         description.value,
-        deuDate.value,
+        dueDate.value,
         priority.value
       );
-      //create
     } else {
       data.addTask(
         currentProject,
         title.value,
         description.value,
-        deuDate.value,
+        dueDate.value,
         priority.value
       );
     }
-    //close
+    // Close the editor window and show all tasks
     document.querySelector("#editor-window").remove();
     showAllTasks(currentProject);
   });
 
-  //edit
+  // Populate fields with task data if editing an existing task
   if (taskIndex + 1) {
-    let task = data.getTask(currentProject, taskIndex);
+    const task = data.getTask(currentProject, taskIndex);
     title.value = task.title;
     description.value = task.description;
-    deuDate.value = task.dueDate //check empty dates
-      ? format(task.dueDate, "yyyy-MM-dd")
-      : "No date";
+    dueDate.value = task.dueDate ? format(task.dueDate, "yyyy-MM-dd") : "No date";
     priority.value = task.priority;
   }
 
+  // Append elements to editor window
   editorWindow.appendChild(title);
   editorWindow.appendChild(closeBtn);
   editorWindow.appendChild(description);
-  editorWindow.appendChild(deuDate);
+  editorWindow.appendChild(dueDate);
   editorWindow.appendChild(priority);
   editorWindow.appendChild(doneBtn);
 
+  // Append editor window to body
   document.body.appendChild(editorWindow);
 }
 
 function finishTask(taskDiv) {
-  //get index from sibling
-  let taskIndex = taskDiv.parentNode.childNodes[0].innerText - 1;
-  //remove
+  // get index from sibling
+  const taskIndex = taskDiv.parentNode.childNodes[0].innerText - 1;
+  // remove
   data.removeTask(currentProject, taskIndex);
   showAllTasks(currentProject);
 }
 
 function popNewProject() {
-  let newProjectWindow = document.createElement("div");
+  const newProjectWindow = document.createElement("div");
   newProjectWindow.id = "new-project-window";
 
-  //ProjectName
-  let projectName = document.createElement("input");
+  // ProjectName
+  const projectName = document.createElement("input");
   projectName.type = "text";
   projectName.placeholder = "Project name";
   projectName.id = "project-name-setter";
 
-  //closeBtn
-  let closeBtn = document.createElement("div");
+  // closeBtn
+  const closeBtn = document.createElement("div");
   closeBtn.id = "close-btn-project";
   closeBtn.innerText = "X";
   closeBtn.addEventListener("click", () => {
-    //close
+    // close
     document.querySelector("#new-project-window").remove();
   });
 
-  //addBtn
-  let addBtn = document.createElement("button");
+  // addBtn
+  const addBtn = document.createElement("button");
   addBtn.id = "add-btn";
   addBtn.innerText = "add";
   addBtn.addEventListener("click", () => {
-    //alert
+    // alert
     if (data.getAllTasks(projectName.value)) {
       alert("Project names must be different");
       return;
@@ -156,10 +164,11 @@ function popNewProject() {
     }
     data.addProject(projectName.value);
     showAllProjects();
-    //close
+    selectProject(projectName.value);
+    // close
     document.querySelector("#new-project-window").remove();
   });
-  //add element
+  // add element
   newProjectWindow.appendChild(projectName);
   newProjectWindow.appendChild(closeBtn);
   newProjectWindow.appendChild(addBtn);
@@ -167,45 +176,45 @@ function popNewProject() {
   document.body.appendChild(newProjectWindow);
 }
 function selectProject(project) {
-  //remove selected-project class from previous project
+  // remove selected-project class from previous project
   document
-    .querySelector(`#${currentProject}`)
+    .querySelector(`[data-project="${currentProject}"`)
     .classList.remove("selected-project");
 
   currentProject = project;
-  //add selected-project class to current project
+  // add selected-project class to current project
 
   document
-    .querySelector(`#${currentProject}`)
+    .querySelector(`[data-project="${currentProject}"`)
     .classList.add("selected-project");
   showAllTasks(project);
 }
 function showAllProjects() {
-  //Clear side bar
+  // Clear side bar
   document.querySelector("#sidebar").textContent = "";
-  let projects = data.getAllProjects();
-  //get all the project name
+  const projects = data.getAllProjects();
+  // get all the project name
   Object.keys(projects).forEach((project) => {
-    //project element
-    let projectDiv = document.createElement("div");
+    // project element
+    const projectDiv = document.createElement("div");
     projectDiv.classList.add("project");
-    projectDiv.id = project;
+    projectDiv.setAttribute("data-project", project);
 
-    //projectName
-    let projectName = document.createElement("div");
+    // projectName
+    const projectName = document.createElement("div");
     projectName.classList.add("project-name");
     projectName.innerText = project;
     projectName.addEventListener("click", () => {
-      //select project
+      // select project
       selectProject(project);
     });
-    //Project remove button
-    let removeProjectBtn = document.createElement("div");
+    // Project remove button
+    const removeProjectBtn = document.createElement("div");
     removeProjectBtn.innerText = "X";
     removeProjectBtn.id = "remove-project-btn";
     removeProjectBtn.addEventListener("click", () => {
       if (confirm(`Are you sure you want delete ${currentProject}`)) {
-        //remove
+        // remove
         data.removeProject(currentProject);
 
         //
@@ -213,18 +222,18 @@ function showAllProjects() {
         showAllProjects();
       }
     });
-    //append project name
+    // append project name
     projectDiv.appendChild(projectName);
-    //won't add project remove button to home project
-    if (!(project == "Home")) {
-      //append project remove button
+    // won't add project remove button to home project
+    if (!(project === "Home")) {
+      // append project remove button
       projectDiv.appendChild(removeProjectBtn);
     }
-    //add project to sidebar
+    // add project to sidebar
     document.querySelector("#sidebar").appendChild(projectDiv);
   });
-  //Add new project button
-  let addProjectBtn = document.createElement("div");
+  // Add new project button
+  const addProjectBtn = document.createElement("div");
   addProjectBtn.innerText = "+";
   addProjectBtn.id = "add-project-btn";
   addProjectBtn.addEventListener("click", () => {
@@ -235,20 +244,20 @@ function showAllProjects() {
 
 function showAllTasks(project) {
   document.querySelector("#main").textContent = "";
-  //task element
+  // task element
   data.getAllTasks(project).forEach((task, index) => {
-    let taskDiv = document.createElement("div");
+    const taskDiv = document.createElement("div");
     taskDiv.classList.add("task", task.priority);
-    //taskDivHead
-    let taskDivHead = document.createElement("div");
+    // taskDivHead
+    const taskDivHead = document.createElement("div");
     taskDivHead.classList.add("task-div-head");
-    //indexDiv
-    let indexDiv = document.createElement("div");
+    // indexDiv
+    const indexDiv = document.createElement("div");
     indexDiv.classList.add("index");
     indexDiv.innerText = index + 1;
 
-    //finishTaskBtn
-    let finishTaskBtn = document.createElement("input");
+    // finishTaskBtn
+    const finishTaskBtn = document.createElement("input");
     finishTaskBtn.setAttribute("type", "checkbox");
     finishTaskBtn.classList.add("finish-task-btn");
     finishTaskBtn.addEventListener("change", (event) => {
@@ -256,21 +265,21 @@ function showAllTasks(project) {
     });
     taskDivHead.appendChild(indexDiv);
     taskDivHead.appendChild(finishTaskBtn);
-    //taskDivMain
-    let taskDivMain = document.createElement("div");
+    // taskDivMain
+    const taskDivMain = document.createElement("div");
     taskDivMain.classList.add("task-div-main");
     taskDivMain.addEventListener("click", () => {
       popTaskEditor(index);
     });
 
-    //titleDiv
-    let titleDiv = document.createElement("div");
+    // titleDiv
+    const titleDiv = document.createElement("div");
     titleDiv.classList.add("title");
     titleDiv.innerText = task.title;
-    //dueDateDiv
-    let dueDateDiv = document.createElement("div");
+    // dueDateDiv
+    const dueDateDiv = document.createElement("div");
     dueDateDiv.classList.add("dueDate");
-    dueDateDiv.innerText = task.dueDate //check empty dates
+    dueDateDiv.innerText = task.dueDate // check empty dates
       ? format(task.dueDate, "yyyy-MM-dd")
       : "No date";
 
@@ -281,8 +290,8 @@ function showAllTasks(project) {
     taskDiv.appendChild(taskDivMain);
     document.querySelector("#main").appendChild(taskDiv);
   });
-  //addTaskBtn
-  let addTaskBtn = document.createElement("div");
+  // addTaskBtn
+  const addTaskBtn = document.createElement("div");
   addTaskBtn.id = "add-task-btn";
   addTaskBtn.innerText = "+";
   addTaskBtn.addEventListener("click", () => {

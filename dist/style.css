@@ -80,11 +80,11 @@ header{
     grid-area: add-btn;
 }
 
-#main{
+/* #main{
     grid-area:main ;
     background-color: lightgray;
 
-}
+} */
 #initial-text{
     color: gray;
     position: absolute;

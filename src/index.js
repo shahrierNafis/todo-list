@@ -1,3 +1,4 @@
-import dom from "./dom.js";
+import dom from "./dom";
+
 dom.showAllProjects();
 dom.selectProject("Home");
